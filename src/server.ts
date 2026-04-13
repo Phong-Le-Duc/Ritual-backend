@@ -3,12 +3,13 @@ import helmet from 'helmet';
 import logger from 'jet-logger';
 import morgan from 'morgan';
 import path from 'path';
-
 import Paths from '@src/common/constants/Paths';
 import { RouteError } from '@src/common/utils/route-errors';
 import BaseRouter from '@src/routes/apiRouter';
-
 import EnvVars, { NodeEnvs } from './common/constants/env';
+import ProductRoutes from './routes/ProductRoutes';
+
+
 
 /******************************************************************************
                                 Setup
@@ -34,6 +35,7 @@ if (EnvVars.NodeEnv === NodeEnvs.PRODUCTION) {
 
 // Add APIs, must be after middleware
 app.use(Paths._, BaseRouter);
+app.use('/api', ProductRoutes);
 
 // Add error handler
 app.use((err: Error, _: Request, res: Response, next: NextFunction) => {
