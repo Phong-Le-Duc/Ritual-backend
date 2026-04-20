@@ -1,5 +1,7 @@
-import logger from 'jet-logger';
+import dotenv from 'dotenv';
+dotenv.config();
 
+import logger from 'jet-logger';
 import EnvVars from './common/constants/env';
 import server from './server';
 

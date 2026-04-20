@@ -1,42 +1,37 @@
-import { Product } from '../models/Product.model';
+import { PrismaClient, Product } from '@prisma/client';
+const prisma = new PrismaClient();
 
-
-
-const products: Product[] = [];
-
-
-export function getAllProducts(): Product[] {
-    return products;
+// Get all products
+export async function getAllProducts(): Promise<Product[]> {
+    return await prisma.product.findMany();
 }
 
-
-export function getProductById(id: string): Product | undefined {
-    return products.find(p => p.id === id);
+// Get a product by id
+export async function getProductById(id: number): Promise<Product | null> {
+    return await prisma.product.findUnique({ where: { id } });
 }
 
-
-export function addProduct(product: Product): void {
-    products.push(product);
+// Add a new product
+export async function addProduct(product: Omit<Product, 'id'>): Promise<Product> {
+    return await prisma.product.create({ data: product });
 }
 
-
-
-export function updateProduct(updated: Product): boolean {
-    const index = products.findIndex(p => p.id === updated.id);
-    if (index !== -1) {
-        products[index] = updated;
-        return true;
-    }
-    return false;
+// Update a product
+export async function updateProduct(updated: Product): Promise<boolean> {
+    const result = await prisma.product.updateMany({
+        where: { id: updated.id },
+        data: {
+            name: updated.name,
+            description: updated.description,
+            price: updated.price,
+            image: updated.image,
+        },
+    });
+    return result.count > 0;
 }
 
-
-
-export function deleteProduct(id: string): boolean {
-    const index = products.findIndex(p => p.id === id);
-    if (index !== -1) {
-        products.splice(index, 1);
-        return true;
-    }
-    return false;
+// Delete a product
+export async function deleteProduct(id: number): Promise<boolean> {
+    const result = await prisma.product.deleteMany({ where: { id } });
+    return result.count > 0;
 }
